@@ -3,15 +3,65 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Stars, Mail, Sparkles, Music, Phone } from 'lucide-react';
 import { APP_CONFIG } from './config';
 
-const FloatingElements = () => {
-  const elements = useMemo(() => Array.from({ length: 40 }, (_, i) => ({
+const HeaderSection = () => (
+  <header className="header-container">
+    <motion.div
+      className="header-heart"
+      animate={{
+        scale: [1, 1.15, 1.1, 1.25, 1],
+        opacity: [0.8, 1, 0.9, 1, 0.8],
+      }}
+      transition={{
+        duration: 2.2,
+        repeat: Infinity,
+        ease: "easeInOut",
+        times: [0, 0.2, 0.4, 0.6, 1]
+      }}
+    >
+      <Heart fill="#ffb7c5" size={64} className="text-[#ffb7c5]" />
+    </motion.div>
+    <motion.div
+      initial={{ opacity: 0, letterSpacing: "10px" }}
+      animate={{ opacity: 1, letterSpacing: "4px" }}
+      transition={{ duration: 1.5, ease: "easeOut" }}
+      className="header-text"
+    >
+      Loved Eternally
+    </motion.div>
+  </header>
+);
+
+const BackgroundAura = () => (
+  <div className="aura-container">
+    {[1, 2, 3].map((i) => (
+      <motion.div
+        key={i}
+        className="aura-glow"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{
+          scale: [0.8, 2.5],
+          opacity: [0, 0.15, 0],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          delay: i * 2.5,
+          ease: "linear"
+        }}
+      />
+    ))}
+  </div>
+);
+
+const FloatingAtmosphere = () => {
+  const elements = useMemo(() => Array.from({ length: 25 }, (_, i) => ({
     id: i,
-    initialX: Math.random() * 100,
-    initialY: Math.random() * 100,
-    duration: Math.random() * 12 + 10,
-    size: Math.random() * 35 + 10,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    duration: Math.random() * 15 + 15,
+    size: Math.random() * 20 + 10,
     delay: Math.random() * 10,
-    type: Math.random() > 0.2 ? 'heart' : 'star'
+    type: Math.random() > 0.4 ? 'heart' : 'sparkle'
   })), []);
 
   return (
@@ -20,31 +70,62 @@ const FloatingElements = () => {
         <motion.div
           key={el.id}
           className="floating-element"
-          initial={{
-            x: `${el.initialX}vw`,
-            y: `110vh`,
-            opacity: 0,
-            scale: 0
-          }}
+          initial={{ x: `${el.x}vw`, y: `110vh`, opacity: 0 }}
           animate={{
-            y: `-10vh`,
-            x: [`${el.initialX}vw`, `${el.initialX + (Math.random() * 20 - 10)}vw`],
-            opacity: [0, 0.4, 0],
-            scale: [0.5, 1.2, 0.5],
+            y: [`110vh`, `-10vh`],
+            x: [`${el.x}vw`, `${el.x + (Math.random() * 10 - 5)}vw`],
+            opacity: [0, 0.2, 0],
             rotate: [0, 360]
           }}
           transition={{
             duration: el.duration,
             repeat: Infinity,
             delay: el.delay,
-            ease: "easeInOut"
+            ease: "linear"
           }}
         >
           {el.type === 'heart' ? (
-            <Heart size={el.size} fill="currentColor" className="text-[#ff4d6d]" />
+            <Heart size={el.size} fill="#ffb7c5" className="opacity-20" />
           ) : (
-            <Sparkles size={el.size} className="text-[#ffb3c1]" />
+            <Sparkles size={el.size} className="text-[#d4af37] opacity-20" />
           )}
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
+const CelebratoryElements = () => {
+  const elements = useMemo(() => Array.from({ length: 12 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    duration: Math.random() * 10 + 8,
+    size: Math.random() * 30 + 20,
+    delay: Math.random() * 5,
+    color: i % 2 === 0 ? '#ffb7c5' : '#ffe5ec'
+  })), []);
+
+  return (
+    <div className="footer-elements">
+      {elements.map((el) => (
+        <motion.div
+          key={el.id}
+          className="footer-element"
+          initial={{ x: `${el.x}vw`, y: `105vh`, opacity: 0, scale: 0.8 }}
+          animate={{
+            y: `65vh`,
+            opacity: [0, 0.4, 0],
+            scale: [0.8, 1.2, 1],
+            x: [`${el.x}vw`, `${el.x + (Math.random() * 15 - 7.5)}vw`]
+          }}
+          transition={{
+            duration: el.duration,
+            repeat: Infinity,
+            delay: el.delay,
+            ease: "easeOut"
+          }}
+        >
+          <div className="balloon" style={{ width: el.size, height: el.size * 1.3, backgroundColor: el.color }} />
         </motion.div>
       ))}
     </div>
@@ -57,32 +138,32 @@ export default function App() {
 
   const steps = [
     {
-      title: `For My Dear ${recipientName}`,
+      title: `To My Everything, ${recipientName}`,
       content: proposalSentences.intro,
-      button: "Begin Our Story",
-      icon: <Mail className="text-[#ff4d6d] mx-auto mb-6" size={72} />,
-      bgColor: "rgba(255, 77, 109, 0.12)"
+      button: "Our Infinite Story",
+      icon: <Mail className="text-[#d4af37] mx-auto mb-6" size={80} />,
+      bgColor: "rgba(255, 183, 197, 0.05)"
     },
     {
-      title: "Through Every Moment",
+      title: "Through Every Heartbeat",
       content: proposalSentences.journey,
-      button: "Continue the Journey",
-      icon: <Music className="text-[#ffb3c1] mx-auto mb-6" size={72} />,
-      bgColor: "rgba(255, 179, 193, 0.12)"
+      button: "Cherishing Every Step",
+      icon: <Music className="text-[#ffb7c5] mx-auto mb-6" size={80} />,
+      bgColor: "rgba(255, 229, 236, 0.05)"
     },
     {
-      title: "Soulmate Connection",
+      title: "One Soul, Two Hearts",
       content: proposalSentences.connection,
-      button: "The Most Important Step",
-      icon: <Heart className="text-[#ff4d6d] mx-auto mb-6" size={72} />,
-      bgColor: "rgba(255, 77, 109, 0.15)"
+      button: "Seal Our Destiny",
+      icon: <Heart className="text-[#d4af37] mx-auto mb-6" size={80} />,
+      bgColor: "rgba(212, 175, 55, 0.05)"
     },
     {
-      title: "Forever & Always",
+      title: "Forever & Ever",
       content: proposalSentences.question,
       button: "YES, I LOVE YOU! ❤️",
-      icon: <Stars className="text-[#ffd700] mx-auto mb-6" size={80} />,
-      bgColor: "rgba(255, 215, 0, 0.15)",
+      icon: <Stars className="text-[#ffb7c5] mx-auto mb-8" size={100} />,
+      bgColor: "rgba(255, 183, 197, 0.08)",
       isFinal: true
     }
   ];
@@ -98,37 +179,31 @@ export default function App() {
 
   return (
     <div className="mobile-container">
-      <FloatingElements />
+      <BackgroundAura />
+      <FloatingAtmosphere />
+      <HeaderSection />
 
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
-          initial={{ opacity: 0, scale: 0.8, y: 50, rotate: -5 }}
-          animate={{ opacity: 1, scale: 1, y: 0, rotate: 0 }}
-          exit={{ opacity: 0, scale: 1.2, y: -50, rotate: 5 }}
-          whileTap={{ scale: 0.98 }}
-          transition={{
-            type: "spring",
-            stiffness: 120,
-            damping: 18,
-            duration: 0.7
-          }}
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -30, scale: 1.05 }}
+          transition={{ duration: 0.8, ease: "anticipate" }}
           className="glass-card"
           style={{ backgroundColor: steps[step].bgColor }}
         >
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            whileHover={{ scale: 1.1, rotate: 10 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           >
             {steps[step].icon}
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.4 }}
           >
             {steps[step].title}
           </motion.h1>
@@ -136,19 +211,19 @@ export default function App() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.6 }}
           >
             {steps[step].content}
           </motion.p>
 
           <motion.button
-            whileHover={{ scale: 1.05, y: -5 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             className="btn-primary"
             onClick={handleAction}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
           >
             {steps[step].isFinal && <Phone size={20} className="inline mr-2 align-text-bottom" />}
             {steps[step].button}
@@ -156,22 +231,7 @@ export default function App() {
         </motion.div>
       </AnimatePresence>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.6 }}
-        transition={{ delay: 1.2 }}
-        style={{
-          position: 'fixed',
-          bottom: 30,
-          fontSize: '1rem',
-          fontWeight: 700,
-          color: 'var(--secondary)',
-          textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-        }}
-        whileHover={{ scale: 1.1, color: '#ff4d6d' }}
-      >
-        Loved Eternally ✨
-      </motion.div>
+      <CelebratoryElements />
     </div>
   );
 }
